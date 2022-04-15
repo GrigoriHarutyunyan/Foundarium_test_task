@@ -118,9 +118,14 @@ class CarController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
+        $user = User::with('car')->where('id', $data['user_id'])->first();
+        if ($user  == null){
+            return response()->json([
+                'message' => "Водитель с id - ". $data["user_id"] . " не найден"
+            ]);
+        }
         try {
             $car = Car::with('user')->findOrFail($id);
-            $user = User::with('car')->where('id', $data['user_id'])->first();
             if ($car->user_id || isset($user->car)) {
                 return response()->json([
                     'message' => "Автомобил или водител заняты",
