@@ -147,10 +147,12 @@ class CarController extends Controller
 
     /**
      * Если у автомобиля есть водитель удаляем его.
+     * @param Request $request
      * @param $id
-     * @return JsonResponse|void
+     * @return JsonResponse
      */
-    public function removeDriver(Request $request, $id){
+    public function removeDriver(Request $request, $id): JsonResponse
+    {
         $user_id = $request->user_id;
 
         try{
