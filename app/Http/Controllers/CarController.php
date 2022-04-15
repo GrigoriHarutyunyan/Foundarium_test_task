@@ -150,17 +150,24 @@ class CarController extends Controller
      * @param $id
      * @return JsonResponse|void
      */
-    public function removeDriver($id){
+    public function removeDriver(Request $request, $id){
+        $user_id = $request->user_id;
+
         try{
             $car = Car::with('user')->findOrFail($id);
-            $user = User::with('car')->where('id', $car->user_id)->first();
-            if($car->user_id){
+            $user = User::with('car')->where('id', $user_id)->first();
+
+            if($car->user_id && $car->user_id === $user->id){
                 $car->update([
                     'user_id' => NULL,
                 ]);
                 return response()->json([
                     'message' => "Водитель $user->name покинул автомобил бренда $car->brand",
                 ], 201);
+            }else{
+                return response()->json([
+                    'message' => "У автомобиля с id - $id нет такого водителя.",
+                ], 400);
             }
         }catch (Exception $e){
             return response()->json([
