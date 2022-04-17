@@ -37,7 +37,10 @@ class CarController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $data = $request->all();
+        $data = $request->only([
+            'brand',
+            'model',
+        ]);
         $validator = Validator::make($data, [
             'brand' => 'required',
             'model' => 'required'
@@ -58,7 +61,10 @@ class CarController extends Controller
      */
     public function update(Request $request, $id): JsonResponse
     {
-        $data = $request->all();
+        $data = $request->only([
+            'brand',
+            'model',
+        ]);
 
         $validator = Validator::make($data, [
             'brand' => 'required',
@@ -68,7 +74,6 @@ class CarController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
-
         try {
             Car::findOrFail($id)->update($data);
             return response()->json([
